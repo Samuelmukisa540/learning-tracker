@@ -9,6 +9,8 @@ void main() async {
 }
 
 class LearningTrackerApp extends StatelessWidget {
+  const LearningTrackerApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

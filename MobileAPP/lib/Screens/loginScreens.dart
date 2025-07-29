@@ -1,8 +1,12 @@
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -223,6 +227,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 50,
                                 child: ElevatedButton(
                                   onPressed: _isLoading ? null : _authenticate,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.blue.shade600,
+                                    foregroundColor: Colors.white,
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
                                   child:
                                       _isLoading
                                           ? SizedBox(
@@ -245,14 +257,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.blue.shade600,
-                                    foregroundColor: Colors.white,
-                                    elevation: 2,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
                                 ),
                               ),
                               SizedBox(height: 16),

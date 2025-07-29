@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, avoid_types_as_parameter_names
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,7 +9,11 @@ class CourseDetailPage extends StatelessWidget {
   final String courseId;
   final String courseName;
 
-  CourseDetailPage({required this.courseId, required this.courseName});
+  const CourseDetailPage({
+    super.key,
+    required this.courseId,
+    required this.courseName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +30,9 @@ class CourseDetailPage extends StatelessWidget {
                 .orderBy('startTime', descending: true)
                 .snapshots(),
         builder: (context, snapshot) {
-          if (!snapshot.hasData)
+          if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
+          }
 
           final sessions = snapshot.data!.docs;
           final totalTime = sessions.fold(0, (sum, doc) {

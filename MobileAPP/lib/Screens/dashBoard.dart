@@ -1,9 +1,13 @@
+// ignore_for_file: file_names, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:learning_tracker/constants/appTheme.dart';
 
 class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
+
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
@@ -122,8 +126,8 @@ class _DashboardPageState extends State<DashboardPage>
                                 Text(
                                   _getGreeting(),
                                   style: AppTextStyles.bodyMedium.copyWith(
-                                    color: AppColors.textOnPrimary.withOpacity(
-                                      0.8,
+                                    color: AppColors.textOnPrimary.withValues(
+                                      alpha: 0.8,
                                     ),
                                   ),
                                 ),
@@ -138,8 +142,8 @@ class _DashboardPageState extends State<DashboardPage>
                                 Text(
                                   'Ready to continue learning?',
                                   style: AppTextStyles.bodyMedium.copyWith(
-                                    color: AppColors.textOnPrimary.withOpacity(
-                                      0.8,
+                                    color: AppColors.textOnPrimary.withValues(
+                                      alpha: 0.8,
                                     ),
                                   ),
                                 ),
@@ -149,7 +153,9 @@ class _DashboardPageState extends State<DashboardPage>
                           Container(
                             padding: EdgeInsets.all(AppSpacing.lg),
                             decoration: BoxDecoration(
-                              color: AppColors.textOnPrimary.withOpacity(0.2),
+                              color: AppColors.textOnPrimary.withValues(
+                                alpha: 0.2,
+                              ),
                               borderRadius: BorderRadius.circular(
                                 AppBorderRadius.large,
                               ),
