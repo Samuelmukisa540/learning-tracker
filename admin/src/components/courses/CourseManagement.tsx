@@ -35,6 +35,146 @@ interface CourseFormData {
   isActive: boolean;
 }
 
+interface CourseFormProps {
+  isEditing?: boolean;
+  formData: CourseFormData;
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onCancel: () => void;
+  submitting: boolean;
+}
+
+// Move CourseForm outside as a separate component
+const CourseForm: React.FC<CourseFormProps> = ({ 
+  isEditing = false, 
+  formData, 
+  onInputChange, 
+  onSubmit, 
+  onCancel, 
+  submitting 
+}) => (
+  <form onSubmit={onSubmit} className="space-y-4">
+    <div>
+      <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+        Course Title *
+      </label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        value={formData.title}
+        onChange={onInputChange}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        placeholder="Enter course title"
+        required
+      />
+    </div>
+
+    <div>
+      <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        Description *
+      </label>
+      <textarea
+        id="description"
+        name="description"
+        value={formData.description}
+        onChange={onInputChange}
+        rows={3}
+        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        placeholder="Enter course description"
+        required
+      />
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+          Category *
+        </label>
+        <input
+          type="text"
+          id="category"
+          name="category"
+          value={formData.category}
+          onChange={onInputChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="e.g., Web Development"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
+          Duration (hours) *
+        </label>
+        <input
+          type="number"
+          id="duration"
+          name="duration"
+          value={formData.duration}
+          onChange={onInputChange}
+          min="1"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Hours"
+          required
+        />
+      </div>
+    </div>
+
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">
+          Difficulty Level
+        </label>
+        <select
+          id="difficulty"
+          name="difficulty"
+          value={formData.difficulty}
+          onChange={onInputChange}
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        >
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+
+      <div className="flex items-center pt-6">
+        <input
+          type="checkbox"
+          id="isActive"
+          name="isActive"
+          checked={formData.isActive}
+          onChange={onInputChange}
+          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        />
+        <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
+          Active Course
+        </label>
+      </div>
+    </div>
+
+    <div className="flex justify-end space-x-3 pt-4">
+      <button
+        type="button"
+        onClick={onCancel}
+        className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        disabled={submitting}
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        disabled={submitting}
+        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <Save className="w-4 h-4" />
+        <span>{submitting ? 'Saving...' : (isEditing ? 'Update Course' : 'Create Course')}</span>
+      </button>
+    </div>
+  </form>
+);
+
 const CourseManagement: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -238,6 +378,12 @@ const CourseManagement: React.FC = () => {
     resetForm();
   };
 
+  // Cancel add
+  const handleCancelAdd = () => {
+    setShowAddForm(false);
+    resetForm();
+  };
+
   // Get difficulty color classes
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -247,130 +393,6 @@ const CourseManagement: React.FC = () => {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
-
-  // Course form component
-  const CourseForm = ({ isEditing = false }: { isEditing?: boolean }) => (
-    <form onSubmit={isEditing ? handleUpdateCourse : handleAddCourse} className="space-y-4">
-      <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-          Course Title *
-        </label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          value={formData.title}
-          onChange={handleInputChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Enter course title"
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-          Description *
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          rows={3}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Enter course description"
-          required
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-            Category *
-          </label>
-          <input
-            type="text"
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="e.g., Web Development"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
-            Duration (hours) *
-          </label>
-          <input
-            type="number"
-            id="duration"
-            name="duration"
-            value={formData.duration}
-            onChange={handleInputChange}
-            min="1"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Hours"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-1">
-            Difficulty Level
-          </label>
-          <select
-            id="difficulty"
-            name="difficulty"
-            value={formData.difficulty}
-            onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
-        </div>
-
-        <div className="flex items-center pt-6">
-          <input
-            type="checkbox"
-            id="isActive"
-            name="isActive"
-            checked={formData.isActive}
-            onChange={handleInputChange}
-            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-          />
-          <label htmlFor="isActive" className="ml-2 block text-sm text-gray-700">
-            Active Course
-          </label>
-        </div>
-      </div>
-
-      <div className="flex justify-end space-x-3 pt-4">
-        <button
-          type="button"
-          onClick={isEditing ? handleCancelEdit : () => setShowAddForm(false)}
-          className="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-          disabled={submitting}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={submitting}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Save className="w-4 h-4" />
-          <span>{submitting ? 'Saving...' : (isEditing ? 'Update Course' : 'Create Course')}</span>
-        </button>
-      </div>
-    </form>
-  );
 
   if (loading) {
     return (
@@ -490,13 +512,20 @@ const CourseManagement: React.FC = () => {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-900">Add New Course</h2>
               <button 
-                onClick={() => setShowAddForm(false)}
+                onClick={handleCancelAdd}
                 className="text-gray-400 hover:text-gray-600"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <CourseForm />
+            <CourseForm 
+              isEditing={false}
+              formData={formData}
+              onInputChange={handleInputChange}
+              onSubmit={handleAddCourse}
+              onCancel={handleCancelAdd}
+              submitting={submitting}
+            />
           </div>
         </div>
       )}
@@ -514,7 +543,14 @@ const CourseManagement: React.FC = () => {
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <CourseForm isEditing />
+            <CourseForm 
+              isEditing={true}
+              formData={formData}
+              onInputChange={handleInputChange}
+              onSubmit={handleUpdateCourse}
+              onCancel={handleCancelEdit}
+              submitting={submitting}
+            />
           </div>
         </div>
       )}
