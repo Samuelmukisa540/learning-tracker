@@ -6,6 +6,11 @@ import 'package:learning_tracker/constants/appTheme.dart';
 class StudySessionPage extends StatelessWidget {
   const StudySessionPage({super.key});
 
+  String capitalizeFirstLetter(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,6 +135,10 @@ class StudySessionPage extends StatelessWidget {
     String courseId,
     Map<String, dynamic> course,
   ) {
+    final courseTitle = capitalizeFirstLetter(
+      course['title'] ?? 'Unnamed Course',
+    );
+
     return Container(
       decoration: AppDecorations.card,
       child: Material(
@@ -143,7 +152,7 @@ class StudySessionPage extends StatelessWidget {
                 builder:
                     (context) => StudyTimerPage(
                       courseId: courseId,
-                      courseName: course['name'],
+                      courseName: courseTitle,
                     ),
               ),
             );
@@ -180,7 +189,7 @@ class StudySessionPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        course['name'] ?? 'Unnamed Course',
+                        courseTitle,
                         style: AppTextStyles.heading6,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

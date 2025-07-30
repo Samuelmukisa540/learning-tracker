@@ -4,9 +4,7 @@ import {
   Users, 
   BookOpen, 
   Clock, 
-  Settings, 
   LogOut,
-  BarChart3
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -23,8 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, onTabChange }) => {
     { id: 'students', label: 'Students', icon: Users },
     { id: 'courses', label: 'Courses', icon: BookOpen },
     { id: 'sessions', label: 'Study Sessions', icon: Clock },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'settings', label: 'Settings', icon: Settings },
+
   ];
 
   const handleLogout = async () => {

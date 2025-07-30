@@ -6,6 +6,10 @@ import 'package:learning_tracker/constants/appTheme.dart';
 
 class CoursesPage extends StatelessWidget {
   const CoursesPage({super.key});
+  String capitalizeFirstLetter(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +71,9 @@ class CoursesPage extends StatelessWidget {
                   (context, index) => SizedBox(height: AppSpacing.md),
               itemBuilder: (context, index) {
                 final course = courses[index].data() as Map<String, dynamic>;
-                final courseName = course['name'] ?? 'Untitled Course';
+                final courseName = capitalizeFirstLetter(
+                  course['title'] ?? 'Unnamed Course',
+                );
                 final courseDescription =
                     course['description'] ?? 'No description available';
 

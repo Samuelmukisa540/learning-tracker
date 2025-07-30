@@ -300,8 +300,9 @@ class _DashboardPageState extends State<DashboardPage>
                                     (session['startTime'] as Timestamp)
                                         .toDate();
                                 final duration = session['duration'] ?? 0;
-                                final courseName =
-                                    session['courseName'] ?? 'Study Session';
+                                final courseName = capitalizeFirstLetter(
+                                  session['courseName'] ?? 'Study Session',
+                                );
 
                                 return TweenAnimationBuilder<double>(
                                   duration: Duration(
@@ -421,5 +422,10 @@ class _DashboardPageState extends State<DashboardPage>
         },
       ),
     );
+  }
+
+  String capitalizeFirstLetter(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
   }
 }
