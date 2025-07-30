@@ -131,8 +131,8 @@ const SessionMonitoring: React.FC = () => {
           duration: data.duration || calculateDuration(data.startTime?.toDate(), data.endTime?.toDate()),
           status: determineStatus(data.startTime?.toDate(), data.endTime?.toDate()),
           notes: data.notes || '',
-          studentName: 'Loading...', // Placeholder while fetching
-          courseName: 'Loading...' // Placeholder while fetching
+          studentName: 'Loading...',
+          courseName: 'Loading...' 
         };
         fetchedSessions.push(session);
       });

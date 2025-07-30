@@ -33,7 +33,6 @@ const StudentManagement: React.FC = () => {
         fetchedStudents.push({
           id: doc.id,
           ...data,
-          // Convert Firestore timestamps to Date objects
           createdAt: data.createdAt?.toDate() || new Date(),
           lastActive: data.lastActive?.toDate() || new Date(),
         } as User);
