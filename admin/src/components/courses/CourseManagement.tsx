@@ -6,6 +6,7 @@ import {
   updateDoc, 
   deleteDoc, 
   doc, 
+  getDocs, 
   onSnapshot,
   serverTimestamp,
   Timestamp 
@@ -50,28 +51,75 @@ const CourseManagement: React.FC = () => {
     isActive: true
   });
 
+  // Firestore collection reference
   const coursesCollection = collection(db, 'courses');
 
+  // Fetch courses from Firebase
   useEffect(() => {
-    const unsubscribe = onSnapshot(coursesCollection, (snapshot) => {
-      const coursesData: Course[] = [];
-      snapshot.forEach((doc) => {
-        coursesData.push({
-          id: doc.id,
-          ...doc.data()
-        } as Course);
-      });
-      setCourses(coursesData);
-      setLoading(false);
-    }, (error) => {
-      console.error('Error fetching courses:', error);
-      setLoading(false);
-    });
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        
+        const snapshot = await getDocs(coursesCollection);
+        const coursesData: Course[] = [];
+        snapshot.forEach((doc) => {
+          coursesData.push({
+            id: doc.id,
+            ...doc.data()
+          } as Course);
+        });
+        setCourses(coursesData);
+        
+        // If successful, set up real-time listener
+        const unsubscribe = onSnapshot(coursesCollection, (snapshot) => {
+          const coursesData: Course[] = [];
+          snapshot.forEach((doc) => {
+            coursesData.push({
+              id: doc.id,
+              ...doc.data()
+            } as Course);
+          });
+          setCourses(coursesData);
+        }, (error) => {
+          console.error('Error in real-time listener:', error);
+          fetchCoursesOnce();
+        });
 
-    return () => unsubscribe();
+        setLoading(false);
+        return unsubscribe;
+        
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+        setLoading(false);
+        alert('Error connecting to Firebase. Please check your configuration and try again.');
+      }
+    };
+
+    const fetchCoursesOnce = async () => {
+      try {
+        const snapshot = await getDocs(coursesCollection);
+        const coursesData: Course[] = [];
+        snapshot.forEach((doc) => {
+          coursesData.push({
+            id: doc.id,
+            ...doc.data()
+          } as Course);
+        });
+        setCourses(coursesData);
+      } catch (error) {
+        console.error('Error fetching courses once:', error);
+      }
+    };
+
+    const unsubscribePromise = fetchCourses();
+    
+    return () => {
+      unsubscribePromise.then(unsubscribe => {
+        if (unsubscribe) unsubscribe();
+      });
+    };
   }, []);
 
-  // Filter courses based on search term
   const filteredCourses = courses.filter(course =>
     course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     course.category.toLowerCase().includes(searchTerm.toLowerCase())
@@ -89,6 +137,7 @@ const CourseManagement: React.FC = () => {
     });
   };
 
+  // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setFormData(prev => ({
